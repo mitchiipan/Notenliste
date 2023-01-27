@@ -6,7 +6,7 @@ public class Student {
 
     private String name;
     private int year;
-    int id;
+    private int id;
     private List<Subject> subjects = new ArrayList<>();
 
     public Student(String name, int year, int id) {
@@ -25,6 +25,18 @@ public class Student {
 
     public int getYear() {
         return year;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Subject> getSubjects() {

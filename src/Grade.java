@@ -1,30 +1,26 @@
+
+
 public class Grade {
 
 
     private int grade;
-    public ControlType controlType;
+    private TestType testType;
 
-    public Grade(int grade, ControlType controlType) {
 
+    public Grade(int grade, TestType testType) { //TODO int grade validieren lassen , dass da wirklich nur 1 bis 6 geht, oder n ENUM auch für die grades
         this.grade = grade;
-        this.controlType = controlType;
+        this.testType = testType;
     }
-
 
     public int getGrade() {
-
         return grade;
+    }
 
+    public TestType getTestType() {
+        return testType;
     }
 
 
-    public void setGrade(int grade) {
 
-        this.grade = grade;
-
-    }
 
 }
-
-
-

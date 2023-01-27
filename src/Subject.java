@@ -1,57 +1,52 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class Subject {
 
     private String name;
     private String teacher;
     private List<Grade> gradeList = new ArrayList<>();          // Listen sollte man nicht null lassen, weil bei Aufruf mancher Methoden zur Liste gäbe es ungewünsche exceptions (nullpointer)
-
-
-
-    public float getAverage() {                                 //Durchschnitt der vorhandenen Noten für das jeweilige Fach
-        int amount=0;                                           // Noten beschaffen --> aus der Liste holen also
-        int sumAll=0;
-        int sumExam = 0;
-        int sumTest = 0;
-
+    public Subject(String name, String teacher) {                               // will ich noch iwelche Parameter übergebeben???
+        this.name = name;
+        this.teacher = teacher;
+    }
+    public Optional<Float> getAverage() {
+        /*
+        Durchschnitt der vorhandenen Noten für das jeweilige Fach Noten beschaffen --> aus der Liste holen also
+        alle Noten des Typs EXAM wreden doppelt gewertet
+        */
+        int amount = 0;
+        int sumAll = 0;
+        int sum;
+        int sumAmount;
         for (Grade grade : gradeList) {
-
-            if (grade.controlType.equals(ControlType.EXAM)) {
-                sumExam = grade.getGrade() * 2;
+            if (grade.getTestType().equals(TestType.EXAM)) {
+                sum = grade.getGrade() * 2;
+                sumAmount = 2;
             } else {
-                sumTest = grade.getGrade();
+                sum= grade.getGrade();
+                sumAmount = 1;
             }
-            sumAll =sumAll + sumExam + sumTest;
-
+            sumAll = sumAll + sum;
+            amount = amount + sumAmount;
         }
-        for (Grade grade : gradeList) {                         //brauche die Anzahl aller Noten
-            int sumAmount =0;
-            if (grade.controlType.equals(ControlType.EXAM)) {   //wieder durch die Liste gehen jedes Teil prüfen ob EXAM is,
-                sumAmount= 2;                                   // wenn es EXAM is, wirds mit doppelten faktor gewertet
-            } else {
-                sumAmount = 1;                                  // ansonsten normal einfach
-            }
-            amount = amount + sumAmount;                        // alles rin inne variable die dann die gesamte Anzahl inklusive der Faktorisierten hat
+        if (amount > 0) {
+            return Optional.of( (float)sumAll /  (float)amount);
         }
-        float average = (float)sumAll / (float)amount;                        // uuuund, den Durchschnitt ausrechenen, als float, weil Kommazahlen
-
-        return average;     /** WIEVIELE NACHKOMMASTELLEN? --> 2 */
+        return Optional.empty() ;
+    }
+        public void addGrade (Grade grade){
+            gradeList.add(grade);
+        }
+        public List<Grade> getGradeList ()
+        {
+            return new ArrayList<>(this.gradeList);
+        }
+        public void deleteGrade (Grade grade){
+            gradeList.remove(grade);
+        }
     }
 
-    public void addGrade(Grade grade) {                         /** hier sollen neue Noten hinzugefügt werden zu einem jeweiligen Fach
-                                                                Noten sind Objekte der Klasse Grade*/
-    }
 
-    public void deleteGrade(Grade grade) {                      /** Falsche Noten etc. wieder entfernen*/
-
-    }
-    public List<Grade> getGradeList() {
-        return gradeList;
-    }
-
-    public void setGradeList(List<Grade> gradeList) {
-        this.gradeList = gradeList;
-    }
-
-}

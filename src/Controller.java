@@ -69,7 +69,7 @@ public class Controller {
         } while (true);
     }
 
-    private Student openChoseStudentMenu() {   //todo kann ich bestimmt schlanker machen --> nochmals in Methoden aufsplitten
+    private List<String> getStudentListNames() {
         String studentName;                           //TODO ein zurück oder abbrechen wäre nicht schlecht XD
         List<String> studentNamesList =
             new ArrayList<>(studentList.size()); //parameter capacity Länge der Student List (Performanceoptimierung)
@@ -78,10 +78,14 @@ public class Controller {
             studentName = student.getName();
             studentNamesList.add(studentName);  //rein inne neue Liste nur mit Namen
         }
-        printMenu("Schülerauswahl Menü", studentNamesList);
+        return studentNamesList;
+    }
+
+    private Student openChoseStudentMenu() {   //todo kann ich bestimmt schlanker machen --> nochmals in Methoden aufsplitten
+        printMenu("Schülerauswahl Menü", getStudentListNames());
         do {
             System.out.print("Name: ");
-            studentName = input.next();
+            String studentName = input.next();
             for (Student student : studentList) {
                 String studentNameComparison = student.getName();
                 boolean isStudentNameEqual = studentName.equals(studentNameComparison);
@@ -113,7 +117,7 @@ public class Controller {
                 Optional<Float> totalAverage = chosenStudent.getTotalAverage();
                 System.out.println(totalAverage);
                 break;// durch das break direkt zum openStudentMenü zurück
-            case 4://zurück //TODO nur ein menü weiter zurück wird bestimmt nicht via MethodenAufruf gemacht des vorherigen Menüs?
+            case 4://zurück
                 hasAnotherRun = false;
                 break;
             case 5:// TODO Programm soll zur Gänze beendet werden
@@ -131,6 +135,10 @@ public class Controller {
             int userInput = input.nextInt();
             switch (userInput) {
             case 1://Fach auswählen
+                if(chosenStudent.getSubjects().isEmpty()){
+                    System.out.println("Noch keine Fächer vorhanden.");
+                    break;
+                }
                 Subject chosenSubject = openChoseSubjectMenu(chosenStudent);
                 openChosenSubjectMenu(chosenSubject);
                 break;
@@ -167,9 +175,10 @@ public class Controller {
         } // todo, was wenn nein oder x oder stuff --> do while maybe oder nur while will see
     }
 
-    private Subject openChoseSubjectMenu(Student chosenStudent) { // todo, wenn der Student keine Fächer hat wirds ne Endlosschleife
+    private Subject openChoseSubjectMenu(Student chosenStudent) { // todo das ganze hier nochmals überprüfen, Endlosschleifen, sofern Facheingabe nicht übereinstimmt
+        boolean hasAnotherRound = true;
         printSubjectsMenu(chosenStudent);//erstmal rausfinden, welche Fächer der Student hat
-        while (true){
+        do { // wenn Schüler noch gar keine Fächer hat, wird dies schon eine ebene früher abgefangen und direkt wieder zurück zur Auswahl geleitet
             System.out.print("Fach: ");
             String subjectNameComparison = input.nextLine();
             List<Subject> subjects = chosenStudent.getSubjects();
@@ -179,10 +188,13 @@ public class Controller {
                 if (isSubjectNameEqual) {
                     System.out.println("Fach gefunden.");
                     return subject;
+                }else if (subjectName.contains("Zurück")) {
+                    hasAnotherRound = false;
                 }
             }
             System.out.println("Bitte Schreibweise überprüfen.");
-        }
+        } while (hasAnotherRound);
+        return null;
     }
 
     private void openEditStudentMenu(Student chosenStudent) {

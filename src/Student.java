@@ -5,8 +5,11 @@ import java.util.Optional;
 public class Student {
 
     private String name;
+
     private int year;
+
     private int id;
+
     private List<Subject> subjects = new ArrayList<>();
 
     public Student(String name, int year, int id) {
@@ -15,10 +18,10 @@ public class Student {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }
+
     public int getId() {
         return id;
     }
@@ -40,8 +43,18 @@ public class Student {
     }
 
     public List<Subject> getSubjects() {
-        return new ArrayList<>(this.subjects);
+        return this.subjects;
     }
+
+    public List<String> getSubjectNames() {
+        List<String> subjectNames = new ArrayList<>();
+        List<Subject> subjects = this.subjects;
+        for (Subject subject : subjects) {
+            subjectNames.add(subject.toString());
+        }
+        return subjectNames;
+    }
+
 
     public void addSubject(Subject subject) {
         subjects.add(subject);
@@ -50,7 +63,7 @@ public class Student {
     public Optional<Float> getTotalAverage() {
         /*
         ich nehme meine Liste mit allen subjects, hol da meine averages der jeweiligen Fächer und schmeiß die in sum
-        nebenbei wird auch gleich mitgezählt wieviele Fächer es sind (die auch befüllt sind), sodass etwaige Fehler
+        nebenbei wird auch gleich mitgezählt wie viele Fächer es sind (die auch befüllt sind), sodass etwaige Fehler
         hinsichtlich leerer subjects durch die geteilt wird obsolet werden.
         */
 

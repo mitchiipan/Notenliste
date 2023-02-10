@@ -146,6 +146,7 @@ public class Controller {
                 createSubject(chosenStudent);
                 break;
             case 3://Fach löschen
+                deleteSubject(chosenStudent);
                 break;
             case 4://zurück
                 hasAnotherRun = false;
@@ -156,6 +157,9 @@ public class Controller {
 
             }
         } while (hasAnotherRun);
+    }
+    private void deleteSubject(Student student){
+
     }
 
     private void createSubject(Student chosenStudent) {
@@ -206,6 +210,7 @@ public class Controller {
     }
 
     private void openChosenSubjectMenu(Subject subject) {
+
 
     }
 

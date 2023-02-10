@@ -1,0 +1,85 @@
+
+
+	 -----------------------------------------------
+	|				  Menü Auswahl					                |
+	| ---------------------------------------------	|
+	| Optionen:										                  |
+	|			1. Schüler auswählen 				              |
+	|			2. Schüler anlegen					|
+	|			3. Schüler löschen					|
+	|			4. Zurück							|
+	|			5. Beenden							|
+	|												|
+	 -----------------------------------------------
+
+Eingabe: 1	
+Auswahl: 1 --> Schüler auswählen	
+
+
+	 -----------------------------------------------
+	|				  Liste Schüler					|
+	| ---------------------------------------------	|
+	| Optionen:										|
+	|			1. Name 1							|
+	|	   		2. Name	2							|
+	|			3. Name	3							|
+	|			4. Zurück							|
+	|												|
+	|			5. Beenden							|
+	 -----------------------------------------------
+
+Eingabe: 2
+Auswahl: 2 --> Name2
+
+
+	 -----------------------------------------------																																										
+	|				  Menü Schüler					|																																							
+	| ---------------------------------------------	|																																							
+	| Optionen:										|																																									
+	|			1. Schulfächer 						|																																														
+	|			2. Gesamtdurchschnitt Noten			|																																																
+	|			3. -Stuff der mir noch einfällt-	|																																																
+	|			4. Zurück							|																																							
+	|												|																																																				
+	|			5. Beenden							|																																									
+	 -----------------------------------------------																																												
+	 
+Eingabe: 1	
+Auswahl: 1 --> Schulfächer	
+
+
+	 -----------------------------------------------
+	|				Menü Schulfächer  				|
+	| ---------------------------------------------	|
+	| Optionen:										|
+	|			1. Lernfeld1 						|
+	|			2. Lernfeld2						|
+	|			3. Lernfeld3						|
+	|			4. Zurück							|
+	|												|
+	|			5. Beenden							|
+	 -----------------------------------------------
+	
+Eingabe: 3	
+Auswahl: 3 --> Lernfeld3	
+	
+	
+	 -----------------------------------------------
+	|				   Menu  Fach	  				|			
+	| ---------------------------------------------	|
+	| Optionen:										|
+	|			1. Noten hinzufügen 				|
+	|			2. Noten löschen					|
+	|			3. Noten auflisten					|
+	|			4. Durchschnitt ermitteln			|
+	|			5. Zurück							|
+	|												|
+	|			6. Beenden							|
+	 -----------------------------------------------
+	 
+Eingabe: 1
+Auswahl: 1 --> Noten hinzufügen
+
+
+
+

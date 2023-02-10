@@ -12,6 +12,16 @@ public class Subject {
         this.name = name;
         this.teacher = teacher;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public Optional<Float> getAverage() {
         /*
         Durchschnitt der vorhandenen Noten für das jeweilige Fach Noten beschaffen --> aus der Liste holen also

@@ -6,8 +6,12 @@ import java.util.Optional;
 public class Subject {
 
     private String name;
+
     private String teacher;
-    private List<Grade> gradeList = new ArrayList<>();          // Listen sollte man nicht null lassen, weil bei Aufruf mancher Methoden zur Liste gäbe es ungewünsche exceptions (nullpointer)
+
+    private List<Grade> gradeList = new ArrayList<>();
+        // Listen sollte man nicht null lassen, weil bei Aufruf mancher Methoden zur Liste gäbe es ungewünsche exceptions (nullpointer)
+
     public Subject(String name, String teacher) {                               // will ich noch iwelche Parameter übergebeben???
         this.name = name;
         this.teacher = teacher;
@@ -25,7 +29,7 @@ public class Subject {
     public Optional<Float> getAverage() {
         /*
         Durchschnitt der vorhandenen Noten für das jeweilige Fach Noten beschaffen --> aus der Liste holen also
-        alle Noten des Typs EXAM wreden doppelt gewertet
+        alle Noten des Typs EXAM werden doppelt gewertet
         */
         int amount = 0;
         int sumAll = 0;
@@ -36,27 +40,30 @@ public class Subject {
                 sum = grade.getGrade() * 2;
                 sumAmount = 2;
             } else {
-                sum= grade.getGrade();
+                sum = grade.getGrade();
                 sumAmount = 1;
             }
             sumAll = sumAll + sum;
             amount = amount + sumAmount;
         }
         if (amount > 0) {
-            return Optional.of( (float)sumAll /  (float)amount);
+            return Optional.of((float)sumAll / (float)amount);
         }
-        return Optional.empty() ;
+        return Optional.empty();
     }
-        public void addGrade (Grade grade){
-            gradeList.add(grade);
-        }
-        public List<Grade> getGradeList ()
-        {
-            return new ArrayList<>(this.gradeList);
-        }
-        public void deleteGrade (Grade grade){
-            gradeList.remove(grade);
-        }
+
+    public void addGrade(Grade grade) {
+        gradeList.add(grade);
     }
+
+    public List<Grade> getGradeList() {
+        return new ArrayList<>(this.gradeList);
+    }
+
+    public void deleteGrade(Grade grade) {
+        gradeList.remove(grade);
+    }
+
+}
 
 

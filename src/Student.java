@@ -54,6 +54,9 @@ public class Student {
         }
         return subjectNames;
     }
+    public void deleteSubject(Subject subject) {
+        subjects.remove(subject);
+    }
 
 
     public void addSubject(Subject subject) {

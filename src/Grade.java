@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Grade {
 
 
@@ -17,8 +19,5 @@ public class Grade {
     public TestType getTestType() {
         return testType;
     }
-
-
-
 
 }

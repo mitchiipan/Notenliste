@@ -1,16 +1,33 @@
 import java.util.*;
+//import static PrintController.*;
 
 public class Controller {
     // Daten merken
-    private Scanner input = new Scanner(System.in);
+    public Scanner input = new Scanner(System.in);
 
     private List<Student> studentList = new ArrayList<>();
+    SubjectController subjectController = new SubjectController();
+
+    public static int count = 1000000;
+
+    public static int[] array = new int[count];
+
+    public static Random random = new Random();
 
     public void start() {
 
         // anlegen von Test Input
 
         Student student1 = new Student("Lisa", 2, 1111);
+        //        Student student1;
+        //        try {
+        //            FileInputStream fout = new FileInputStream("f.txt");
+        //            ObjectInputStream in = new ObjectInputStream(fout);
+        //            student1 = (Student)in.readObject();
+        //            in.close();
+        //        } catch (Exception e) {
+        //            throw new RuntimeException(e);
+        //        }
         Student student2 = new Student("Daniel", 3, 1112);
         Student student3 = new Student("Amon", 1, 1113);
         Student student4 = new Student("Lilly", 2, 1114);
@@ -19,11 +36,11 @@ public class Controller {
         studentList.add(student3);
         studentList.add(student4);
 
-        Subject lf1 = new Subject("LF 1", "Schlüter");
-        Subject lf2 = new Subject("LF 2", "Schmidt");
-        Subject lf3 = new Subject("LF 3", "Schmidt");
-        Subject lf4 = new Subject("LF 4", "Schlüter");
-        Subject lf5 = new Subject("LF 5", "Lewerenz");
+        Subject lf1 = new Subject("LF1", "Schlüter");
+        Subject lf2 = new Subject("LF2", "Schmidt");
+        Subject lf3 = new Subject("LF3", "Schmidt");
+        Subject lf4 = new Subject("LF4", "Schlüter");
+        Subject lf5 = new Subject("LF5", "Lewerenz");
 
         student1.addSubject(lf1);
         student1.addSubject(lf2);
@@ -31,22 +48,28 @@ public class Controller {
         student1.addSubject(lf4);
         student1.addSubject(lf5);
 
+//        for (int i = 1; i <= count; i++) {
+//            array[i - 1] = i;
+//        }
+
+
         // Test Input ende
 
         openMainMenu();
     }
 
+
     private void openMainMenu() {
         do {
-            printMenu("Hauptmenü", List.of("1. Schüler auswählen", "2. Schüler anlegen", "3. Schüler löschen", "4. Beenden"));
+            UtilsPrint.printMenu("Hauptmenü", List.of("1. Schüler auswählen", "2. Schüler anlegen", "3. Schüler löschen", "4. Beenden"));
 
-            System.out.print("Auswahl: ");
-            //Todo try catch input mismatch exception überall wie hier bei input
+            System.out.print("Auswahl: ");//Todo try catch input mismatch exception überall wie hier bei input
             int userInput;
             try {
                 userInput = input.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben.");
+                input.next();
                 continue;
             }
             switch (userInput) {
@@ -62,29 +85,16 @@ public class Controller {
                 break;
             case 4:
                 return;
-            // wenn ich jetzt hiernach noch was hinschreiben würde, nicht nur ne Prüfung, sondern richtiger Code, dann müsste genau hier noch ein default hin
-            // im default wäre denn, was passiert, wenn User Zahl außerhalb des Wertebereiches eingibt
+            default:// im default: was passiert, wenn User Zahl außerhalb des Wertebereiches eingibt, aber halt ne Zahl
+                System.out.println("Bitte Eingabe im Wertebereich.");
             }
-            //TODO Prüfen auf Programm beenden ( boolean?)
         } while (true);
     }
 
-    private List<String> getStudentListNames() {
-        String studentName;                           //TODO ein zurück oder abbrechen wäre nicht schlecht XD
-        List<String> studentNamesList =
-            new ArrayList<>(studentList.size()); //parameter capacity Länge der Student List (Performanceoptimierung)
-
-        for (Student student : studentList) {   // die Schüler Liste ist voll mit Objekten(Students) von denen nur die Namen nötig zum Abgleich
-            studentName = student.getName();
-            studentNamesList.add(studentName);  //rein inne neue Liste nur mit Namen
-        }
-        return studentNamesList;
-    }
-
-    private Student openChoseStudentMenu() {   //todo kann ich bestimmt schlanker machen --> nochmals in Methoden aufsplitten
-        printMenu("Schülerauswahl Menü", getStudentListNames());
+    private Student openChoseStudentMenu() {
+        UtilsPrint.printMenu("Schülerauswahl Menü", getStudentListNames());
         do {
-            System.out.print("Name: ");
+            System.out.print("Auswahl: ");
             String studentName = input.next();
             for (Student student : studentList) {
                 String studentNameComparison = student.getName();
@@ -101,17 +111,23 @@ public class Controller {
     private void openChosenStudentMenu(Student chosenStudent) {  // hab Schüler auswählen gewählt
 
         boolean hasAnotherRun = true;
-
         do {
-            printStudentMenu(chosenStudent);
+            UtilsPrint.printStudentMenu(chosenStudent);
             System.out.print("Auswahl: ");
-            int userInput = input.nextInt();
+            int userInput;// TODO könnte ich es des nicht direkt im try initialisieren ?
+            try {
+                userInput = input.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben.");
+                input.next();
+                continue;
+            }
             switch (userInput) {
             case 1:// Schüler bearbeiten
-                openEditStudentMenu(chosenStudent);
+                openEditChosenStudentMenu(chosenStudent);
                 break;
             case 2:// Schulfächer
-                openSubjectMenu(chosenStudent);
+                subjectController.openSubjectMenu(chosenStudent);
                 break;
             case 3://Gesamtdurchschnitt Noten
                 Optional<Float> totalAverage = chosenStudent.getTotalAverage();
@@ -120,277 +136,64 @@ public class Controller {
             case 4://zurück
                 hasAnotherRun = false;
                 break;
-            case 5:// TODO Programm soll zur Gänze beendet werden
-                return;
-            }
-        } while (hasAnotherRun);
-    }
-
-    private void openSubjectMenu(Student chosenStudent) {
-        boolean hasAnotherRun = true;
-        do {
-            printMenu("Schulfächer " + chosenStudent.getName(),
-                List.of("1. Fach auswählen", "2. Fach anlegen", "3. Fach löschen", "4. Zurück", "5. Beenden"));
-            System.out.print("Auswahl: ");
-            int userInput = input.nextInt();
-            switch (userInput) {
-            case 1://Fach auswählen
-                if (chosenStudent.getSubjects().isEmpty()) {
-                    System.out.println("Noch keine Fächer vorhanden.");
-                    break;
-                }
-                Subject chosenSubject = openChoseSubjectMenu(chosenStudent);
-                openChosenSubjectMenu(chosenStudent, chosenSubject);
-                break;
-            case 2://Fach anlegen
-                createSubject(chosenStudent);
-                break;
-            case 3://Fach löschen
-                deleteSubject(chosenStudent);
-                break;
-            case 4://zurück
-                hasAnotherRun = false;
-                break;
-            case 5://beenden
+            case 5:
+                closeApp();
                 return;
             default:
-
+                System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben.");
             }
         } while (hasAnotherRun);
     }
 
-    private void deleteSubject(Student student) {
-        printSubjectsMenu(student);
-        System.out.print("Welches Fach soll gelöscht werden? \nAuswahl: ");
-        String toBeErasedSubject = input.nextLine();
-        int amountSubjects = student.getSubjectNames().size();
-        for (int i = 0; i < amountSubjects; i++) {
-            String subject = student.getSubjectNames().get(i);
-            if (toBeErasedSubject.equals(subject)) {
-                System.out.println("Soll\n Fach: " + subject + "\nwirklich gelöscht werden? j/n » ");
-                String confirmation = input.next();
-                if (confirmation.equals("j")) {
-                    Subject chosenSubject = student.getSubjects().get(i);
-                    student.deleteSubject(chosenSubject);
-                    System.out.println("Fach wurde gelöscht."); //und jetzt wieder zurück zum Hauptmenü
-                }
-            }
-        }
-    }
-
-    private void createSubject(Student chosenStudent) {
-        String subjectName;
-        String subjectTeacher;
-        System.out.print("Name des Faches: ");
-        subjectName = input.next();
-        System.out.print("Lehrer: ");
-        subjectTeacher = input.next();
-        System.out.print("Sind die Angaben \n Fach: " + subjectName + "\n Lehrer: " + subjectTeacher + " \n korrekt? j/n » ");
-        String confirmation = input.next();
-        if (confirmation.equals("j")) {
-            Subject newSubject = new Subject(subjectName, subjectTeacher);
-            // das zeug jetzt, weil confirmed, in ein Objekt schmeißen und inne Liste der Fächer speichern
-            chosenStudent.addSubject(newSubject);
-            System.out.println("Neues Fach wurde angelegt.");
-        } // todo, was wenn nein oder x oder stuff --> do while maybe oder nur while will see
-    }
-
-    private Subject openChoseSubjectMenu(
-        Student chosenStudent) { // todo das ganze hier nochmals überprüfen, Endlosschleifen, sofern Facheingabe nicht übereinstimmt
-        boolean hasAnotherRound = true;
-        printSubjectsMenu(chosenStudent);//erstmal rausfinden, welche Fächer der Student hat
-        System.out.print("Fach: ");
-        do
-        { // wenn Schüler noch gar keine Fächer hat, wird dies schon eine ebene früher abgefangen und direkt wieder zurück zur Auswahl geleitet
-            String subjectNameComparison = input.nextLine();
-            List<Subject> subjects = chosenStudent.getSubjects();
-            for (Subject subject : subjects) {
-                String subjectName = subject.getName();
-                boolean isSubjectNameEqual = subjectName.equals(subjectNameComparison);
-                if (isSubjectNameEqual) {
-                    System.out.println("Fach gefunden.");
-                    return subject;
-                } else if (subjectName.contains("Zurück")) {
-                    hasAnotherRound = false;
-                }
-            }
-            //            System.out.println("Bitte Schreibweise überprüfen.");
-        } while (hasAnotherRound);
-        return null;
-    }
-
-    private void openEditStudentMenu(Student chosenStudent) {
-        int userInput;
-        printEditStudentMenu(chosenStudent);
+    private void openEditChosenStudentMenu(Student chosenStudent) {
+        int userInput = 0;
+        UtilsPrint.printEditStudentMenu(chosenStudent);
         System.out.print("Auswahl: ");
-        userInput = input.nextInt();
-        editChosenStudent(input, chosenStudent, userInput);
-    }
-
-    private void openChosenSubjectMenu(Student chosenStudent, Subject chosenSubject) {
-        int userInput;
-        boolean hasAnotherRound = true;
-        do {
-            printChosenSubjectMenu(chosenStudent, chosenSubject);
-            System.out.print("Auswahl: ");
-            userInput = input.nextInt();
-
-            switch (userInput) {
-            case 1:// Note hinzufügen
-                addGradeToSubject(chosenSubject);
-                break;
-            case 2:// Noten anzeigen
-                showAllGradesOfSubject(chosenSubject);
-                break;
-            case 3://Note löschen
-                deleteGrade(chosenSubject);
-                break;
-            case 4://Durchschnitt der Noten dieses Faches
-                Optional<Float> average = chosenSubject.getAverage();
-                average.ifPresent(System.out::println); // todo iwie noch was abfangen, wenn optional leer ( nici said so) ?
-                break;
-            case 5://zurück zum openSubjectMenü
-                hasAnotherRound = false;
-                break;
-            case 6:// TODO Programm soll zur Gänze beendet werden
-                break;
-            }
-        } while (hasAnotherRound);
-
-    }
-
-    private void deleteGrade(Subject chosenSubject) {
-        showAllGradesOfSubject(chosenSubject);
-        System.out.print("Welche Note soll gelöscht werden? \nAuswahl: ");
-        int indexOfToBeErasedGrade = input.nextInt() - 1;
-        int amountGrades = chosenSubject.getGradeList().size();
-        for (int i = 0; i < amountGrades; i++) {
-            if (indexOfToBeErasedGrade == i) {
-                System.out.println(
-                    "Soll\n Note: " + chosenSubject.getGradeList().get(i).getGrade() + " (" + chosenSubject.getGradeList().get(i)
-                        .getTestType() + ")" + "\nwirklich gelöscht werden? j/n » ");
-                String confirmation = input.next();
-                if (confirmation.equals("j")) {
-                    Grade grade = chosenSubject.getGradeList().get(i);
-                    chosenSubject.deleteGrade(grade);
-                    System.out.println("Note wurde gelöscht."); //und jetzt wieder zurück zum Hauptmenü
-                }
-            }
-        }
-    }
-
-    //    private void printChoseToBeDeletedGrade(Student student, Subject subject) {
-    //        String headline = subject.getName() + "  " + student.getName();
-    //
-    //        printMenu(headline,subject.getGradeList(). );
-    //    }
-
-    private void showAllGradesOfSubject(Subject chosenSubject) {
-        if (chosenSubject.getGradeList().isEmpty()) {
-            System.out.println("Es sind noch keine Noten vorhanden.");
-        } else {
-            for (int i = 0; i < chosenSubject.getGradeList().size(); i++) {
-                String testType;
-                int index = i + 1;
-                int grade = chosenSubject.getGradeList().get(i).getGrade();
-                if (chosenSubject.getGradeList().get(i).getTestType().equals(TestType.EXAM)) {
-                    testType = "Klausur";
-                    System.out.println(index + ". " + grade + " (" + testType + ")");
-                } else {
-                    testType = "Test";
-                    System.out.println(index + ". " + grade + " (" + testType + ")");
-                }
-            }
-        }
-    }
-
-    private void addGradeToSubject(Subject subject) {
-        // TODO wenn Exception, printed es das Menü noc einmal mit "Auswahl:" der Noten , dann stürzt es ab
-        int userInput;
-        int testTypeInput;
-        TestType test;
         try {
-            System.out.print("Note: ");
             userInput = input.nextInt();
-            System.out.print("Art der Note: ");
-            testTypeInput = input.nextInt();
         } catch (InputMismatchException e) {
             System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben.");
-            return;
+            input.next();
         }
-        if (testTypeInput == 1) {
-            test = TestType.TEST;
-        } else if (testTypeInput == 2) {
-            test = TestType.EXAM;
-        } else {
-            System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben2.");
-            return;
+        switch (userInput) { // TODO in Methoden auslagern konsequent durchziehen (in eine Methode)
+        case 1://Name ändern
+            System.out.println("aktueller Name: " + chosenStudent.getName());
+            System.out.print("neuer Name: ");
+            String newStudentName = input.next();
+            chosenStudent.setName(newStudentName);
+            break;
+        case 2:// Jahrgang ändern
+            System.out.println("aktuelles Jahr: " + chosenStudent.getYear());
+            System.out.print("neues Jahr: ");
+            userInput = input.nextInt();
+            chosenStudent.setYear(userInput);
+            break;
+        case 3:// ID ändern
+            System.out.println("aktuelle ID: " + chosenStudent.getId());
+            System.out.print("neue Schüler-ID: ");
+            userInput = input.nextInt();
+            chosenStudent.setId(userInput);
+            break;
+        case 4://zurück
+            break;
+        case 5://beenden
+            closeApp();
+            break;
+        default:
+            System.out.println("Bitte nur Zahlen gemäß Auswahloptionen eingeben.");
         }
-        Grade newGrade = new Grade(userInput, test);
-        subject.addGrade(newGrade);
-        System.out.println("Note wurde hinzugefügt.");
     }
 
-    private void printMenu(String headline, List<String> lines) {
-        // todo exception, wenn headline-länge > maxspace
-        int maxSpace = 66;
+    private List<String> getStudentListNames() {
+        String studentName;
+        List<String> studentNamesList =
+            new ArrayList<>(studentList.size()); //parameter capacity Länge der Student List (Performanceoptimierung)
 
-        printHeadline(headline, maxSpace);
-
-        final int linesLeftSpace = 12;
-        final int linesRightSpaceSubstring = 1;
-        printLine("Optionen", 2, maxSpace - 10);
-
-        for (String content : lines) {
-            int linesLeftSpaceSubstring = linesLeftSpace;
-            while (content.length() > 0) {
-                String subContent =
-                    content.substring(0, Math.min(content.length(), maxSpace - linesLeftSpaceSubstring - linesRightSpaceSubstring));
-                printLine(subContent, linesLeftSpaceSubstring, maxSpace - subContent.length() - linesLeftSpaceSubstring);
-                content = content.substring(subContent.length());
-                linesLeftSpaceSubstring = 15;
-            }
+        for (Student student : studentList) {   // die Schüler Liste ist voll mit Objekten(Students) von denen nur die Namen nötig zum Abgleich
+            studentName = student.getName();
+            studentNamesList.add(studentName);  //rein inne neue Liste nur mit Namen
         }
-        printLine("", maxSpace, 0);
-        System.out.println("╚" + ("═".repeat(maxSpace)) + "╝");
-    }
-
-    private static void printHeadline(String headline, int maxSpace) {
-
-        int lineLength = headline.length();
-        int leftSpace = (maxSpace - lineLength) / 2;
-        int rightSpace = maxSpace - leftSpace - lineLength;
-
-        System.out.println("╔" + ("═".repeat(maxSpace)) + "╗");
-        printLine(headline, leftSpace, rightSpace);
-        System.out.println("╠" + ("═".repeat(maxSpace)) + "╣");
-    }
-
-    private static void printLine(String text, int leftSpace, int rightSpace) {
-        System.out.print("║");
-        System.out.print(" ".repeat(leftSpace) + text + " ".repeat(rightSpace));
-        System.out.println("║");
-    }
-
-    private void printStudentMenu(Student student) {
-        String headline = student.getName();
-        printMenu(headline, List.of("1. Schüler bearbeiten", "2. Schulfächer", "3. Gesamtdurchschnitt Noten", "4. Zurück", "5. Beenden"));
-    }
-
-    private void printEditStudentMenu(Student student) {
-        String headline = student.getName();
-        printMenu(headline, List.of("1. Namen ändern", "2. Jahr ändern", "3. ID ändern", "4. Zurück", "5. Beenden"));
-    }
-
-    private void printSubjectsMenu(Student student) {
-        String headline = "Schulfächer " + student.getName();
-        printMenu(headline, student.getSubjectNames());
-    }
-
-    private void printChosenSubjectMenu(Student student, Subject subject) {
-        String headline = subject.getName() + "  " + student.getName();
-        printMenu(headline,
-            List.of("1. Note hinzufügen", "2. Noten anzeigen", "3. Note löschen", "4. Durchschnitt", "5. Zurück", "6. Beenden"));
+        return studentNamesList;
     }
 
     private void createStudent() {
@@ -415,7 +218,6 @@ public class Controller {
 
     }
 
-    //System.out.println("Schüler konnte nicht gefunden werden, \nbitte Schreibweise überprüfen und Eingabe wiederholen.");
     private void deleteStudent() {       //todo Rattenschwanz an Daten mit löschen
         System.out.print("Schüler-Id des zu löschenden Schülers: ");
         int toBeErasedStudentId = input.nextInt();
@@ -432,28 +234,9 @@ public class Controller {
         }
     }
 
-    private void editChosenStudent(Scanner eingabe, Student chosenStudent, int userEingabe) {
-
-        switch (userEingabe) {
-        case 1://Name ändern
-            System.out.print("neuer Name: ");
-            String newStudentName = eingabe.next();
-            chosenStudent.setName(newStudentName);
-            break;
-        case 2:// Jahrgang ändern
-            System.out.print("neues Jahr: ");
-            userEingabe = eingabe.nextInt();
-            chosenStudent.setYear(userEingabe);
-            break;
-        case 3:// ID ändern
-            System.out.print("neue Schüler-ID: ");
-            userEingabe = eingabe.nextInt();
-            chosenStudent.setId(userEingabe);
-            break;
-        case 4://zurück
-            break;
-        case 5://beenden
-            break;
-        }
+    public void closeApp() { //TODO follow-up an Datenbank und co. auch hier einbinden zum schließen derer
+        input.close();
+        System.exit(0);
     }
+
 }
